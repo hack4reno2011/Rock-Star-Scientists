@@ -14,3 +14,9 @@ def view_raw_addresses(request):
     a['items'] = RawAddresses.objects.all()
 
     return render(request, 'list.html', a)
+
+
+def view_bone(request):
+    
+    a={}
+    return render(request, 'backbone_ex.html', a)

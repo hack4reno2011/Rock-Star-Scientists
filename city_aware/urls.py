@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^$', 'data.views.landing', name='landing'),
     url(r'^raw-addresses$', 'data.views.view_raw_addresses', name='view_raw_addresses'),
     url(r'^', include(city_api.urls)),
+    url(r'^bone$', 'data.views.view_bone', name='backbone'),
 
     # Examples:
     # url(r'^$', 'city_aware.views.home', name='home'),

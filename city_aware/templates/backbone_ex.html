@@ -26,8 +26,8 @@
 
 var itemTemp = '<span style="color:black;"><%= name %> <%= id %></span><span class="swap" style="font-family:sans-serif; color:blue; cursor:pointer;">[swap]</span> <span class="delete" style="cursor:pointer; color:red; font-family:sans-serif;">[delete]</span>'
 var itemTemp2 = '<div class="label"><%= name %> <%= id %><div class="options"><button class="delete">x</button></div>'
-var noIdItem = '<div class="label"><%= name %><div class="options"><button class="delete">x</button></div></div>'
-var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= name %>"></input><div class="options"><button class="delete">x</button></div></div>'
+var noIdItem = '<div class="label"><%= longform %><div class="options"><button class="delete">x</button></div></div>'
+var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= longform %>"></input><div class="options"><button class="delete">x</button></div></div>'
 
 //var data = [{'name': "USA"}, {'name': "UK"}, {'name': "France"}];
 var data = []
@@ -35,8 +35,8 @@ var data = []
 $(function() {
 
     var Item = Backbone.Model.extend({
-        defaults: {'name': "Unknown"},
-        urlRoot: '/api/testdata/',
+        defaults: {'longform': "Unknown"},
+        urlRoot: '/api/rawaddress/',
         
         //url: function() {
         //    console.log("calling url");
@@ -54,7 +54,7 @@ $(function() {
 
     var List = Backbone.Collection.extend({
         model: Item,
-        url: '/api/testdata/',
+        url: '/api/rawaddress/',
         parse: function(data) {
             console.log("PARSING!");
             console.log(data);
@@ -93,14 +93,14 @@ $(function() {
             //TODO confirm new text, delete if empty
             var newText = $('input.labelInput', this.el).val();
             console.log("CHANGED TEXT:", newText);
-            this.model.set({'name': newText});
+            this.model.set({'longform': newText});
             this.model.save();
         },
         unrender: function() {
             $(this.el).remove();
         },
         swap: function() {
-            this.model.set({'name': this.model.get('cid'), 'cid': this.model.get('name')});
+            this.model.set({'longform': this.model.get('cid'), 'cid': this.model.get('longform')});
         },
         remove: function() {
             //this.model.destroy();
@@ -158,7 +158,7 @@ $(function() {
         addItem: function() {
             console.log("CREATING ITEM!");
             //this.counter++
-            this.collection.add(new Item({'name': "new item"}));
+            this.collection.add(new Item({'longform': "new item"}));
         },
         appendItem: function(item) {
             //console.log("APPENDING ITEM:", item);
@@ -187,7 +187,7 @@ $(function() {
             if (newText) {
                 //TODO not empty?
                 //console.log("NEW TEXT:", newText);
-                var randItem = new Item({'name': newText});
+                var randItem = new Item({'longform': newText});
                 randItem.save({}, {success: buildSuccessReponse(this.collection)});
                 var newText = $('input', this.el).val("");
             }
@@ -219,7 +219,7 @@ $(function() {
     }
     function buildNameComparator(sortOrder) {
         return function(Model) {
-            var str = Model.get("name");
+            var str = Model.get("longform");
             str = str.toLowerCase();
             str = str.split("");
             str = _.map(str, function(letter) { 
