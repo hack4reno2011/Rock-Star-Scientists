@@ -1,0 +1,253 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!--    <link rel="stylesheet" href="/static/css/style.css">-->
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/underscore.js"></script>
+    <script src="/static/js/backbone.js"></script>
+    <style type="text/css">
+.editHolder {
+    width:250px;
+}
+.label {
+    width:250px;
+    clear:both;
+}
+.options {
+    float:right;
+}
+    </style>
+    <script>
+
+var itemTemp = '<span style="color:black;"><%= name %> <%= id %></span><span class="swap" style="font-family:sans-serif; color:blue; cursor:pointer;">[swap]</span> <span class="delete" style="cursor:pointer; color:red; font-family:sans-serif;">[delete]</span>'
+var itemTemp2 = '<div class="label"><%= name %> <%= id %><div class="options"><button class="delete">x</button></div>'
+var noIdItem = '<div class="label"><%= name %><div class="options"><button class="delete">x</button></div></div>'
+var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= name %>"></input><div class="options"><button class="delete">x</button></div></div>'
+
+//var data = [{'name': "USA"}, {'name': "UK"}, {'name': "France"}];
+var data = []
+
+$(function() {
+
+    var Item = Backbone.Model.extend({
+        defaults: {'name': "Unknown"},
+        urlRoot: '/api/testdata/',
+        
+        //url: function() {
+        //    console.log("calling url");
+        //    var base =  '/api/testdata/'; 
+        //    if (this.isNew()) {
+        //        return base;
+        //    } else {
+        //        return base + this.id + '/'; //don't forget the slash!
+        //    } 
+        //},
+        //parse: function(resp, xhr) {
+        //    console.log("parse:", resp, xhr);
+        //}
+    });
+
+    var List = Backbone.Collection.extend({
+        model: Item,
+        url: '/api/testdata/',
+        parse: function(data) {
+            console.log("PARSING!");
+            console.log(data);
+            return data.objects;
+        },
+        comparator: function(country) {
+            return -country.get('id');
+        }
+    });
+
+    var ItemView = Backbone.View.extend({
+        tagName: 'li',
+        className: 'green',
+        events: {
+            'click button.delete': 'remove',
+            'dblclick div.label': "editLabel",
+        },
+        initialize: function() {
+            _.bindAll(this, 'render', 'unrender', 'swap', 'remove', 'editLabel', 'saveLabel');
+            this.model.bind('change', this.render);
+            this.model.bind('remove', this.unrender);
+        },
+        render: function() {
+            $(this.el).html(_.template(noIdItem, this.model.toJSON()));
+            return this;
+        },
+        editLabel: function() {
+            console.log("editing label!");
+            //change the template to editing mode
+            $(this.el).html(_.template(editTemp, this.model.toJSON()))
+            $('input.labelInput', this.el).change(this.saveLabel);
+            return this;
+        },
+        saveLabel: function() {
+            console.log("SAVING LABEL!");
+            //TODO confirm new text, delete if empty
+            var newText = $('input.labelInput', this.el).val();
+            console.log("CHANGED TEXT:", newText);
+            this.model.set({'name': newText});
+            this.model.save();
+        },
+        unrender: function() {
+            $(this.el).remove();
+        },
+        swap: function() {
+            this.model.set({'name': this.model.get('cid'), 'cid': this.model.get('name')});
+        },
+        remove: function() {
+            //this.model.destroy();
+            console.log("preparing to destroy:", this.model);
+            this.model.destroy({error: function(model, response) {
+                    console.log("DELETE error:", response);
+                },
+                success: function(model, response) {
+                    //apparently, reports success on 301 ?!?!
+                    console.log("DELETE success:", model, response);
+                }
+            });
+        }
+    });
+    
+    var iList = (new List()).add(data);
+    
+    var AppView = Backbone.View.extend({
+
+        el: $('body'),
+        events: {
+            'click button#refresh': "refreshList",
+            'click button#new': "newItem",
+            'click button#save': "saveList",
+            'click button#sortByName': "sortByName",
+            'click button#sortById': "sortById",
+        },
+        initialize: function() {
+            _.bindAll(this, 'render', 'addItem', 'appendItem', 'saveList', 'sortByName', 'renderList', 'sortById', 'newItem', 'refreshList');
+            this.collection = iList.bind('add', this.appendItem);
+            this.counter = 0;
+            this.sortOrder = -1;
+            this.render();
+            this.collection = iList.bind('reset', this.renderList);
+            this.collection.fetch(); //fires 'reset'
+            //this.collection.fetch({add: true}); //otherwise list will 'reset'
+            //this.collection.fetch({add: true, data: {offset: 50}}); //otherwise list will 'reset'
+            //does collection sort upon 'reset'?
+            //this.collection.sort(); //should fire 'reset'
+            
+        },
+        render: function() {
+            $(this.el).append("<button id='refresh'>Refresh</button>").append("<button id='sortByName'>Sort by Name</button>").append("<button id='sortById'>Sort by ID</button>").append("<input type='text'></input>").append("<button id='new'>New Item</button>").append("<ul></ul>");
+            this.renderList();
+        },
+        renderList: function() {
+            $('ul', this.el).empty();
+            console.log("appending", this.collection.models.length, 
+"default objects");
+            //_ each?
+            for (var i = 0; i < this.collection.models.length; i++) {
+                this.appendItem(this.collection.models[i]);
+            }
+        },
+        addItem: function() {
+            console.log("CREATING ITEM!");
+            //this.counter++
+            this.collection.add(new Item({'name': "new item"}));
+        },
+        appendItem: function(item) {
+            //console.log("APPENDING ITEM:", item);
+            var itemView = new ItemView({
+                model: item
+            });
+            $('ul', this.el).append(itemView.render().el);
+        },
+        saveList: function() {
+            console.log("ATTEMPTING TO SAVE!"); //necessary?
+        },
+        sortByName: function() {
+            this.sortOrder = -this.sortOrder;
+            this.collection.comparator = buildNameComparator(this.sortOrder);
+            console.log("SORT?", this.sortOrder);
+            this.collection.sort();
+        },
+        sortById: function() {
+            this.sortOrder = -this.sortOrder;
+            this.collection.comparator = buildIdComparator(this.sortOrder);
+            this.collection.sort();
+        },
+        newItem: function() {
+            console.log("NEW ITEM!");
+            var newText = $('input', this.el).val();
+            if (newText) {
+                //TODO not empty?
+                //console.log("NEW TEXT:", newText);
+                var randItem = new Item({'name': newText});
+                randItem.save({}, {success: buildSuccessReponse(this.collection)});
+                var newText = $('input', this.el).val("");
+            }
+            
+            //randItem.save(randItem);
+            //randItem.save({}, {success: buildSuccessReponse(this.collection)});
+            
+            //randItem.save({}, {error: function(model, response) {
+            //        console.log("CREATE ERROR:", model, response);
+            //    },
+            //    success: function(model, response) {
+            //        //apparently, reports success on 301 ?!?!
+            //        console.log("CREATE SUCCESS:", model, response);
+            //    }
+            //});
+            //this.appendItem(randItem);
+            //this.renderList();
+        },
+        refreshList: function() {
+            console.log("refresh collection");
+            this.collection.fetch(); //fires 'reset'
+        }
+    });
+    
+    function buildIdComparator(sortOrder) {
+        return function(country) {
+            return sortOrder * country.get('id');
+        }
+    }
+    function buildNameComparator(sortOrder) {
+        return function(Model) {
+            var str = Model.get("name");
+            str = str.toLowerCase();
+            str = str.split("");
+            str = _.map(str, function(letter) { 
+                return String.fromCharCode(sortOrder * (letter.charCodeAt(0)));
+            });
+            return str;
+        }
+    }
+    function buildSuccessReponse(collection) {
+        return function(model, response) {
+            console.log("POST success", model, response);
+            console.log(model.parse(response));
+            collection.add(model);
+            collection.sort();
+        }
+    }
+
+    var app = new AppView();
+});
+    </script>
+</head>
+
+<body>
+
+    <div id="container">
+        <div id="main">
+        </div>
+    </div>
+
+</body>
+</html>
