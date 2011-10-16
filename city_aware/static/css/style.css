@@ -1,6 +1,23 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-body {background:gray; text-align:center; padding-top:10%; color:white}
-#header {font-size:35pt; font-family: helvetica, sans-serif; font-style:oblique; font-weight:700; color:black}
+
+body {
+    background-image:url('paper_2.png');
+    background-repeat: repeat; 
+    text-align:center; 
+    padding-top:10%; 
+    color:black
+    }
+#header {
+    font-size:35pt; 
+    font-family: helvetica, sans-serif; 
+    font-style:oblique; 
+    font-weight:700; 
+    color:black
+  }
+  
+ul {
+    text-align:center;
+    position:relative;
+    }
+  
+
+    
