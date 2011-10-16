@@ -107,6 +107,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'data',
     'tastypie',
+    'livereno',
+    'staff',
 
     'django.contrib.admin',
     'django.contrib.admindocs',
