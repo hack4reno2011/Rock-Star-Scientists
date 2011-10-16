@@ -1,0 +1,20 @@
+{% extends "foundation.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h3>{{category.name}}</h3>
+
+{% if events %}
+<h4>Upcoming events:</h4>
+<ul>
+{% for event in events %}
+    <li><a href="{% url 'event_page' event.id %}">{{event.name}}</a>, Starts: {{event.start_time}}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>This category has no upcoming events.</p>
+
+{% endif %}
+
+{% endblock %}

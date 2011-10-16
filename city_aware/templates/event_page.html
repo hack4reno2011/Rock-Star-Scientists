@@ -1,0 +1,10 @@
+{% extends "foundation.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h3>{{event.name}}</h3>
+<h4>Brought to you by <a href="{% url 'sponsor_page' sponsor_id=event.sponsor.id %}">{{event.sponsor.name}}</a></h4>
+<h4>At the <a href="{% url 'venue_page' venue_id=event.venue.id %}">{{event.venue.name}}</a></h4>
+
+{% endblock %}

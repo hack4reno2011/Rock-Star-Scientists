@@ -1,0 +1,14 @@
+{% extends "foundation.html" %}
+{% load url from future %}
+
+{% block content %}
+{% if sponsors %}
+<ul>
+{% for sponsor in sponsors %}
+<li><a href="{% url 'sponsor_page' sponsor_id=sponsor.id %}">{{sponsor.name}}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>There are no sponsors listed!</p>
+{% endif %}
+{% endblock %}

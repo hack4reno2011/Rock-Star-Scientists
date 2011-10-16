@@ -1,0 +1,14 @@
+{% extends "foundation.html" %}
+{% load url from future %}
+
+{% block content %}
+{% if events %}
+<ul>
+{% for event in events %}
+<li><a href="{% url 'event_page' event_id=event.id %}">{{event.name}}</a>: Starts {{event.start_time}} @ <a href="{% url 'venue_page' venue_id=event.venue.id %}">{{event.venue.name}}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>There are no events listed!</p>
+{% endif %}
+{% endblock %}
