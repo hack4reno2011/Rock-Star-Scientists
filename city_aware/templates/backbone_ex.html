@@ -12,10 +12,10 @@
     <script src="/static/js/backbone.js"></script>
     <style type="text/css">
 .editHolder {
-    width:250px;
+    width:500px;
 }
 .label {
-    width:250px;
+    width:500px;
     clear:both;
 }
 .options {
@@ -26,7 +26,7 @@
 
 var itemTemp = '<span style="color:black;"><%= name %> <%= id %></span><span class="swap" style="font-family:sans-serif; color:blue; cursor:pointer;">[swap]</span> <span class="delete" style="cursor:pointer; color:red; font-family:sans-serif;">[delete]</span>'
 var itemTemp2 = '<div class="label"><%= name %> <%= id %><div class="options"><button class="delete">x</button></div>'
-var noIdItem = '<div class="label"><%= longform %><div class="options"><button class="delete">x</button></div></div>'
+var noIdItem = '<div class="label"><%= longform %>(<%= latitude %>,<%= longitude %>)<div class="options"><button class="delete">x</button></div></div>'
 var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= longform %>"></input><div class="options"><button class="delete">x</button></div></div>'
 
 //var data = [{'name': "USA"}, {'name': "UK"}, {'name': "France"}];
@@ -135,7 +135,7 @@ $(function() {
             this.sortOrder = -1;
             this.render();
             this.collection = iList.bind('reset', this.renderList);
-            this.collection.fetch(); //fires 'reset'
+	        this.collection.fetch({data: {latitude__lt: 39.52, latitude__gt: 39.50}}); //fires 'reset'
             //this.collection.fetch({add: true}); //otherwise list will 'reset'
             //this.collection.fetch({add: true, data: {offset: 50}}); //otherwise list will 'reset'
             //does collection sort upon 'reset'?
