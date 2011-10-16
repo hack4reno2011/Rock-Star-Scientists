@@ -24,8 +24,8 @@ initialize = function() {
   };
   map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
   google.maps.event.addListener(map, 'click', function() {
-    return console.log('clicked');
-  });
+  return console.log('clicked' + ' ' + bounds);
+});
   google.maps.event.addListener(map, 'rightclick', function(event) {
     console.log('right clicked');
     return console.log('points.length =' + String(points.length));
