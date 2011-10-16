@@ -4,10 +4,11 @@ from django.contrib import admin
 admin.autodiscover()
 
 from tastypie.api import Api
-from data.api import RawAddressResource
+from data.api import RawAddressResource, BusStopsResource
 
 city_api = Api(api_name='api')
 city_api.register(RawAddressResource())
+city_api.register(BusStopsResource())
 
 urlpatterns = patterns('',
 
@@ -15,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^raw-addresses$', 'data.views.view_raw_addresses', name='view_raw_addresses'),
     url(r'^', include(city_api.urls)),
     url(r'^bone$', 'data.views.view_bone', name='backbone'),
+    url(r'^busstops$', 'data.views.busstops_main', name='busstops'),
 
     # Examples:
     # url(r'^$', 'city_aware.views.home', name='home'),
