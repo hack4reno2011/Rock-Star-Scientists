@@ -4,12 +4,29 @@
 {% block headers %}
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <style type="text/css">
-#calendar {
+table#calendar {
     width:500px;
-    height:100px;
     margin:auto;
-    border:1px black solid;
 }
+table#calendar td {
+    width:150px;
+    height:75px;
+    border:1px solid black;
+    margin:3px;
+    padding:3px;
+    
+}
+table#calendar td:hover {
+    background-color:#55a;
+    color:white;
+    
+}
+table#calendar td.active {
+    background-color:#55a;
+    color:white;
+}
+
+
 #mapCanvas {
     width: 100%;
     height: 500px;
@@ -18,14 +35,14 @@
     padding:0;
     margin:0;
 }
+.counter {
+    font-size:200%;
+}
 </style>
 <script>
 var buttonMenu = "<button id='refresh'>Refresh</button><button id='sortByName'>Sort by Name</button><button id='sortById'>Sort by ID</button><input type='text'></input><button id='new'>New Item</button><ul></ul>";
 var noIdItem = '<div class="label"><%= name %><div class="options"><button class="delete">x</button></div></div>';
 var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= name %>"></input><div class="options"><button class="delete">x</button></div></div>';
-
-date = Date()
-console.log(date);
 
 var data = []
 
@@ -51,7 +68,7 @@ function addMarker(map, item) {
 	  console.log('marker clicked');
 	  closeInfos();
 	  info = new google.maps.InfoWindow({
-	    content: this.title
+	    content: "<a href='/events/" + item.get('id') + "'>" + this.title + "</a>"
 	  });
 	  info.open(map, this);
 	  return infos[0] = info;
@@ -194,8 +211,22 @@ $(function() {
             this.collection = iList.bind('add', this.appendItem);
             this.sortOrder = -1;
             this.render();
+            //figure out the current Date
+            var newDate = new Date();
+            var tomorrowDate = (new Date()).setDate(newDate.getDate() + 1);
+            //TODO wahhhhhhhhhh
+            var todayStr = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getDate();
+            var tommorowStr = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() + 1);
+            var yesterdayStr = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
+            
+            //$('#yesterdayBlock').html(yesterdayStr);
+            //$('#todayBlock').html("This Week" + todayStr);
+            //$('#tomorrowBlock').html(tommorowStr);
+            
+            //console.log(todayStr, tommorowStr, yesterdayStr);
+            
             this.collection = iList.bind('reset', this.renderList);
-            this.collection.fetch(); //fires 'reset'
+            this.collection.fetch({data: {end_time__gte:'2011-10-17', start_time__lt:'2011-10-24'}}); //fires 'reset'
             //this.collection.fetch({add: true}); //otherwise list will 'reset'
             //this.collection.fetch({add: true, data: {offset: 50}}); //otherwise list will 'reset'
             //this.collection.sort(); //should fire 'reset'
@@ -208,6 +239,8 @@ $(function() {
         renderList: function() {
             $('ul', this.el).empty();
             // _.each?
+            console.log('fetched ' + this.collection.models.length + ' items');
+            $('#todayCount').html(this.collection.models.length + ' items');
             for (var i = 0; i < this.collection.models.length; i++) {
                 this.appendItem(this.collection.models[i]);
             }
@@ -272,6 +305,11 @@ $(function() {
 
 <h3>{{venue.name}}</h3>
 <div id="mapCanvas"></div>
-<!--<div id="calendar">wat</div>-->
+<div><table id="calendar">
+<tr>
+    <td align='center' valign='middle'>Last Week<div id='yesterdayBlock'>11-10 to 11-17</div><div class='counter' id='yesterdayCount'></div></td>
+    <td align='center' valign='middle' class="active">This Week<div id='todayBlock'>11-17 to 11-24</div><div class='counter'  id='todayCount'></div></td>
+    <td align='center' valign='middle'>Next Week<div id='tomorrowBlock'>11-24 to 11-31</div><div class='counter' id='tomorrowCount'></div></td>
+</tr>
 
 {% endblock %}

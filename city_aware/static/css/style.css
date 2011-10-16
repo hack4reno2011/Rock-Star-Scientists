@@ -65,32 +65,32 @@ ul {
     list-style:circle;
     margin-left:20px;
 }
-table.options {
+table.backSupported .options {
     float:right;
 }
-table {
+table.backSupported {
     border: 1px #aaa solid;
 }
-table tr {
+table.backSupported tr {
     border-bottom: 1px #aaa solid;
 }
-table tr:hover {
+table.backSupported tr:hover {
     background-color:#eee;
 }
-table tr.header {
+table.backSupported tr.header {
     border: 1px #aaa solid;
     color:#222;
     text-align: center;
     background-color:#aaa;
 }
-table tr.header th {
+table.backSupported tr.header th {
     vertical-align:middle;
 }
-table tbody td {
+table.backSupported tbody td {
     padding: 5px 6px;
     vertical-align:middle;
 }
-table thead th {
+table.backSupported thead th {
     padding: 5px 6px;
     font-weight:normal;
 }
