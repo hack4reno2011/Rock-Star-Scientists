@@ -24,6 +24,9 @@ var buttonMenu = "<button id='refresh'>Refresh</button><button id='sortByName'>S
 var noIdItem = '<div class="label"><%= name %><div class="options"><button class="delete">x</button></div></div>';
 var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= name %>"></input><div class="options"><button class="delete">x</button></div></div>';
 
+date = Date()
+console.log(date);
+
 var data = []
 
 var blueIcon = new google.maps.MarkerImage(google.maps.G_DEFAULT_ICON);
@@ -34,14 +37,36 @@ function addMarker(map, item) {
     var venue = item.get('venue');
     var position = new google.maps.LatLng(venue['latitude'], venue['longitude']);
     console.log("drawing marker");
-    return marker = new google.maps.Marker({
+    marker = new google.maps.Marker({
         title: item.get('name'),
         position: position,
         map: map,
         draggable: true,
         raiseOnDrag: true
     });
+
+	var closeInfos;
+	google.maps.event.addListener(marker, 'click', function() {
+	  var info;
+	  console.log('marker clicked');
+	  closeInfos();
+	  info = new google.maps.InfoWindow({
+	    content: this.title
+	  });
+	  info.open(map, this);
+	  return infos[0] = info;
+	});
+	closeInfos = function() {
+	  if (infos.length > 0) {
+	    infos[0].set('marker', null);
+	    infos[0].close;
+	    return infos.length = 0;
+	  }
+	};
+	
+
 }
+infos = [];
 
 //google.maps.event.addListener(marker, 'click', function() {
 //    map.setZoom(8);
