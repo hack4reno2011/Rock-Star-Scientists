@@ -1,4 +1,1 @@
-We'll keep the virtualenv outside of the git directory
-
-
-Apparently I have git working with textmate now, so theres that
+This is a project to create a robust reusable API for city information.  The city information can be anything from voter records to neighborhood events, or even bus routes.
