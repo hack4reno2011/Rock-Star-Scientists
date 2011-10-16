@@ -1,11 +1,12 @@
 {% extends "foundation.html" %}
+{% load url from future %}
 {% block headers %}
     <style type="text/css">
 .editHolder {
-    width:400px;
+    width:600px;
 }
 .label {
-    width:400px;
+    width:600px;
     clear:both;
 }
 .options {
@@ -14,13 +15,19 @@
 .inputBar {
     
 }
+.labelInput {
+    width:400px;
+}
+#searchResults {
+    width:300px;
+}
     </style>
     <script>
-var inputMenu = "<div class='inputBar'><label>Name:<input id='newName' type='text'></input></label>Venue:<input type='text' id='defaultVenue' placeholder='No default venue selected' readonly=true></input><input id='venuePK' type='hidden'></input><button id='removeVenue'>Remove Venue</button><button id='add'>Add</button></div><div id='searchArea'></div>";
+var inputMenu = "<div id='barCell'><span class='inputBar'><label>Name:<input id='newName' type='text'></input></label>Venue:<input type='text' id='defaultVenue' placeholder='No default venue selected' readonly=true></input><input id='venuePK' type='hidden'></input><button id='removeVenue'>Remove Venue</button><button id='add'>Add</button></div><div id='searchArea'></span></div>";
 var sortMenu = "<button id='sortByName'>Sort by Name</button><button id='sortById'>Sort by ID</button>";
-var noIdItem = '<div class="label"><%- name %><div class="options"><button class="delete">x</button></div></div>';
-var wIdItem = '<div class="label"><%- name %>(<%- venue %>)<div class="options"><button class="delete">x</button></div></div>';
-var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= name %>"></input><div class="options"><button class="delete">x</button></div></div>';
+var noIdItem = '<div class="label"><%- name %><div class="options"><button class="delete">delete</button></div></div>';
+var wIdItem = '<div class="label"><%- name %>(<%- venue %>)<div class="options"><button class="delete">delete</button></div></div>';
+var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= name %>"></input><div class="options"><button class="delete">delete</button></div></div>';
 var viewSearchResult = '<span class="label"><%- name %></span>';
 var searchMenu = '<label>Find a venue:<input id="searchBox" type="text"></input></label>';
 
@@ -207,7 +214,7 @@ $(function() {
     
     var AppView = Backbone.View.extend({
 
-        el: $('#main'),
+        el: $('#tableCell'),
         events: {
             'click button#refresh': "refreshList",
             'click button#add': "newItem",
@@ -322,5 +329,16 @@ $(function() {
 {% endblock %}
 
 {% block content %}
-<p>Add a sponsor:</p>
+<p><a href="{% url 'staff_home' %}">&lt&lt&lt Return to Staff Homepage</a></p>
+<h4>Add a sponsor:</h4>
+<div id="tableCell"></div>
+<div id="overlay" style="display:none">
+    <div id="overlayPrompt">
+        <span id="overlayQuestion"></span>
+        <div id="overlayButtons">
+            <button id="overlayYes" >Yes</button>
+            <button id="overlayNo" >No</button>
+        </div>
+    </div>
+</div>
 {% endblock %}

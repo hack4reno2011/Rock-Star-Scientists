@@ -26,6 +26,9 @@ urlpatterns = patterns('',
     url(r'^busmap$', 'data.views.busstops_map', name='busmap'),
 
     url(r'^venues(?:/(?P<venue_id>\d+))?$', 'views.venue_page', name='venue_page'),
+    url(r'^events(?:/(?P<event_id>\d+))?$', 'views.event_page', name='event_page'),
+    url(r'^sponsors(?:/(?P<sponsor_id>\d+))?$', 'views.sponsor_page', name='sponsor_page'),
+    url(r'^categories(?:/(?P<category_id>\d+))?$', 'views.category_page', name='category_page'),
     
     url(r'^', include(city_api.urls)),
     url(r'^staff', include('staff.urls')),

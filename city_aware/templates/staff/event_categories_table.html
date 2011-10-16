@@ -1,15 +1,38 @@
 {% extends "foundation.html" %}
+{% load url from future %}
 {% block headers %}
+<style type="text/css">
+</style>
     <script>
 var inputMenu = "<div id='barCell'><span class='inputBar'><label>Name:<input type='text'></input></label><button id='add'>Add</button></span></div>";
 var sortMenu = "<button id='sortByName'>Sort by Name</button><button id='sortById'>Sort by ID</button>";
 var noIdItem = '<div class="label"><%= name %><div class="options"><button class="delete">delete</button></div></div>';
-var noIdRow = '<td class="rowName"><%= name %></td><td><button class="delete">delete</button></td>';
-var editRow = '<td><input class="labelInput" value="<%= name %>"></input></td><td><button class="delete">delete</button></td>';
+var noIdRow = '<td><%= id %></td><td class="rowName"><%= name %></td><td><button class="delete">delete</button></td>';
+var editRow = '<td><%= id %></td><td><input class="labelInput" value="<%= name %>"></input></td><td><button class="delete">delete</button></td>';
 
-var data = []
+var screenOverlay = '<div class="overlay"><div id="box"><p>Are you sure you want to delete <%=name%>?</p><button class="confirmDel">Delete</button><button class="cancelDel">Cancel</button></div></div>';
+
+var data = [];
+var overlayIn = 200,
+    overlayOut = 200;
+
+function callOverlay(question, callback) {
+    $("#overlay").fadeIn(overlayIn);
+    $("#overlayQuestion").html(question);
+    $("#overlayYes").unbind().click(callback);
+}
 
 $(function() {
+
+    $("#overlay").click(function(e) {
+        if (e.target === this) {
+            $(this).fadeOut(overlayOut);
+        }
+    });
+
+    $("#overlayNo").click(function() {
+        $("#overlay").fadeOut(overlayOut);
+    });
 
     var Item = Backbone.Model.extend({
         defaults: {'name': "Unknown"},
@@ -36,7 +59,7 @@ $(function() {
             'dblclick td.rowName': "editLabel",
         },
         initialize: function() {
-            _.bindAll(this, 'render', 'unrender', 'remove', 'editLabel', 'saveLabel');
+            _.bindAll(this, 'render', 'unrender', 'remove', 'editLabel', 'saveLabel', 'actualDestroy');
             this.model.bind('change', this.render);
             this.model.bind('remove', this.unrender);
         },
@@ -65,15 +88,24 @@ $(function() {
             //this.model.destroy();
             //TODO no need for custom callbacks?
             console.log("preparing to destroy:", this.model);
-            this.model.destroy({error: function(model, response) {
-                    console.log("DELETE error:", response);
-                },
-                success: function(model, response) {
-                    //apparently, reports success on 301 ?!?!
-                    console.log("DELETE success:", model, response);
-                }
-            });
-        }
+            $(this.el).html(_.template(noIdRow, this.model.toJSON()));
+            //TODO make backbone function
+            callOverlay("Are you sure you want to delete the category '" + this.model.get('name') + "'?", this.actualDestroy);
+            //this.model.destroy();
+            //this.model.destroy({error: function(model, response) {
+            //        console.log("DELETE error:", response);
+            //    },
+            //    success: function(model, response) {
+            //        //apparently, reports success on 301 ?!?!
+            //        console.log("DELETE success:", model, response);
+            //    }
+            //});
+        },
+        actualDestroy: function() {
+            console.log("will actually destroy!");
+            $("#overlay").fadeOut(overlayOut);
+            this.model.destroy();
+        },
     });
     
     //TODO why global?
@@ -101,7 +133,7 @@ $(function() {
             
         },
         render: function() {
-            $(this.el).append(_.template(inputMenu, {})).append(_.template(sortMenu, {})).append("<table><thead><tr class='header'><th>Category</th><th>Options</th></tr></thead><tbody></tbody></table>");
+            $(this.el).append(_.template(inputMenu, {})).append(_.template(sortMenu, {})).append("<table><thead><tr class='header'><th>id</th><th>Category</th><th>Options</th></tr></thead><tbody></tbody></table>");
             this.renderList();
         },
         renderList: function() {
@@ -141,7 +173,7 @@ $(function() {
         },
         refreshList: function() {
             this.collection.fetch(); //fires 'reset'
-        }
+        },
     });
     
     function buildIdComparator(sortOrder) {
@@ -168,6 +200,16 @@ $(function() {
 {% endblock %}
 
 {% block content %}
-<h3>Add an event category:</h3>
+<p><a href="{% url 'staff_home' %}">&lt&lt&lt Return to Staff Homepage</a></p>
+<h4>Add an event category:</h4>
 <div id="tableCell"></div>
+<div id="overlay" style="display:none">
+    <div id="overlayPrompt">
+        <span id="overlayQuestion"></span>
+        <div id="overlayButtons">
+            <button id="overlayYes" >Yes</button>
+            <button id="overlayNo" >No</button>
+        </div>
+    </div>
+</div>
 {% endblock %}

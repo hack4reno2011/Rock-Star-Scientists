@@ -9,7 +9,7 @@
 <h4>Upcoming events:</h4>
 <ul>
 {% for event in events %}
-    <li>{{event.name}}, Starts: {{event.start_time}}</li>
+    <li><a href="{% url 'event_page' event.id %}">{{event.name}}</a>, Starts: {{event.start_time}}</li>
 {% endfor %}
 </ul>
 {% else %}

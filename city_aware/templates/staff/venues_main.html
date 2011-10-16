@@ -1,11 +1,12 @@
 {% extends "foundation.html" %}
+{% load url from future %}
 {% block headers %}
     <style type="text/css">
 .editHolder {
-    width:600px;
+    width:700px;
 }
 .label {
-    width:600px;
+    width:700px;
     clear:both;
 }
 .options {
@@ -16,10 +17,10 @@
 }
     </style>
     <script>
-var inputMenu = "<div class='inputBar'><label>Name:<input id='newName' type='text'></input></label><label>Latitude:<input id='newLat' type='number' step=0.00001></input></label><label>Longitude:<input id='newLong' type='number' step=0.00001></input></label><button id='add'>Add</button></div>";
+var inputMenu = "<div id='barCell'><span class='inputBar'><label>Name:<input id='newName' type='text'></input></label><label>Latitude:<input id='newLat' type='number' step=0.00001></input></label><label>Longitude:<input id='newLong' type='number' step=0.00001></input></label><button id='add'>Add</button></span></div>";
 var sortMenu = "<button id='sortByName'>Sort by Name</button><button id='sortById'>Sort by ID</button>";
 var noIdItem = '<div class="label"><%= name %> (<%= latitude %>,<%= longitude %>)</div>';
-var editTemp = "<div class='editHolder'><input class='editName' value='<%- name %>'></input>(<input class='editLat' type='number' step=0.00001 value=<%- latitude %>>,<input class='editLong' type='number' step=0.00001 value=<%- longitude %>>)<div class='options'><button class='save'>Save</button><button class='delete'>x</button></div></div>";
+var editTemp = "<div class='editHolder'><input class='editName' value='<%- name %>'></input>(<input class='editLat' type='number' step=0.00001 value=<%- latitude %>>,<input class='editLong' type='number' step=0.00001 value=<%- longitude %>>)<div class='options'><button class='save'>save</button><button class='delete'>delete</button></div></div>";
 
 var data = []
 
@@ -99,7 +100,7 @@ $(function() {
     
     var AppView = Backbone.View.extend({
 
-        el: $('#main'),
+        el: $('#tableCell'),
         events: {
             'click button#refresh': "refreshList",
             'click button#add': "newItem",
@@ -191,5 +192,16 @@ $(function() {
 {% endblock %}
 
 {% block content %}
-<p>Add a venue:</p>
+<p><a href="{% url 'staff_home' %}">&lt&lt&lt Return to Staff Homepage</a></p>
+<h4>Add a venue:</h4>
+<div id="tableCell"></div>
+<div id="overlay" style="display:none">
+    <div id="overlayPrompt">
+        <span id="overlayQuestion"></span>
+        <div id="overlayButtons">
+            <button id="overlayYes" >Yes</button>
+            <button id="overlayNo" >No</button>
+        </div>
+    </div>
+</div>
 {% endblock %}

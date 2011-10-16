@@ -40,7 +40,7 @@ class EventsResource(ModelResource):
             'start_time': ALL,
             'end_time': ALL,
         }
-        limit = 50
+        limit = 100
         queryset = Events.objects.all()
         authentication = Authentication()
         authorization = Authorization()
