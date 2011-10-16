@@ -5,19 +5,28 @@ admin.autodiscover()
 
 from tastypie.api import Api
 from data.api import RawAddressResource, BusStopsResource
+from livereno.api import VenuesResource, SponsorsResource, EventsResource, EventCategoriesResource
 
 city_api = Api(api_name='api')
 city_api.register(RawAddressResource())
 city_api.register(BusStopsResource())
 
+city_api.register(VenuesResource())
+city_api.register(SponsorsResource())
+city_api.register(EventsResource())
+city_api.register(EventCategoriesResource())
+
 urlpatterns = patterns('',
 
     url(r'^$', 'data.views.landing', name='landing'),
     url(r'^raw-addresses$', 'data.views.view_raw_addresses', name='view_raw_addresses'),
-    url(r'^', include(city_api.urls)),
+    
     url(r'^bone$', 'data.views.view_bone', name='backbone'),
     url(r'^busstops$', 'data.views.busstops_main', name='busstops'),
     url(r'^busmap$', 'data.views.busstops_map', name='busmap'),
+
+    url(r'^', include(city_api.urls)),
+    url(r'^staff', include('staff.urls')),
 
     # Examples:
     # url(r'^$', 'city_aware.views.home', name='home'),

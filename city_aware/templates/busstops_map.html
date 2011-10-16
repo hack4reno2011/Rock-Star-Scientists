@@ -41,6 +41,9 @@ var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= nam
 
 var data = []
 
+var blueIcon = new google.maps.MarkerImage(google.maps.G_DEFAULT_ICON);
+blueIcon.url = "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png";
+
 function addMarker(map, item) {
     //use the object's properties
     var position = new google.maps.LatLng(item.get('latitude'), item.get('longitude'));
@@ -49,10 +52,14 @@ function addMarker(map, item) {
         title: item.get('name'),
         position: position,
         map: map,
-        draggable: false,
-        raiseOnDrag: false
+        draggable: true,
+        raiseOnDrag: true
     });
 }
+
+//google.maps.event.addListener(marker, 'click', function() {
+//    map.setZoom(8);
+//  });
 
 $(function() {
     var defaultLat = 39.52546, defaultLong = -119.81423;
@@ -147,9 +154,15 @@ $(function() {
             });
         },
         moveMap: function() {
+            //change the color of the icon
+            
             if (this.model.get('is_drawn')) {
                 console.log("moving map");
-                map.setCenter(this.model.get('marker').getPosition())
+                var marker = this.model.get('marker');
+                marker.setMap(null);
+                marker.icon = blueIcon;
+                marker.setMap(map);
+                map.setCenter(marker.getPosition())
             }
         }
     });
