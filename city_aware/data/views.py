@@ -20,3 +20,8 @@ def view_bone(request):
     
     a={}
     return render(request, 'backbone_ex.html', a)
+    
+def busstops_main(request):
+    #TODO direct to template
+    a={}
+    return render(request, 'busstops_main.html', {})

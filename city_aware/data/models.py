@@ -61,3 +61,11 @@ class Addresses(models.Model):
     modified = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = u"addresses"
+        
+class BusStops(models.Model):
+    name = models.CharField(max_length=255, db_index=True)
+    latitude = models.FloatField(db_index=True)
+    longitude = models.FloatField(db_index=True)
+    modified = models.DateTimeField(auto_now=True)
+    class Meta:
+        db_table = u"bus_stops"
