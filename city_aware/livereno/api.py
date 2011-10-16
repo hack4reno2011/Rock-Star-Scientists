@@ -21,6 +21,7 @@ class VenuesResource(ModelResource):
 
 
 class SponsorsResource(ModelResource):
+    venue = fields.ForeignKey(VenuesResource, 'venue', null=True)
     class Meta:
         filtering = {
             'name': ALL,
