@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "foundation.html" %}
 {% load url from future %}
 
 {% block headers %}
@@ -8,5 +8,7 @@
 
 {% block content %}
 <h2 class="title">Staff Home</h2>
-<a>&lt&lt&lt Return Home</a>
+<p><a>&lt&lt&lt Return Home</a></p>
+
+<p><a href="{% url 'view_event_categories' %}">Edit Event Categories &gt&gt&gt</a></p>
 {% endblock %}
