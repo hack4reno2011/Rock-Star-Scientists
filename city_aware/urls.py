@@ -25,6 +25,8 @@ urlpatterns = patterns('',
     url(r'^busstops$', 'data.views.busstops_main', name='busstops'),
     url(r'^busmap$', 'data.views.busstops_map', name='busmap'),
 
+    url(r'^venues(?:/(?P<venue_id>\d+))?$', 'views.venue_page', name='venue_page'),
+    
     url(r'^', include(city_api.urls)),
     url(r'^staff', include('staff.urls')),
 

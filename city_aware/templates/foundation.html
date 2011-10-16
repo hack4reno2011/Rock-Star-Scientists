@@ -5,26 +5,23 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Live Reno</title>
-	<link rel="stylesheet" href="/static/css/stylereset.css">
 	<link rel="stylesheet" href="/static/css/style.css">
-    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script src="/static/js/jquery.js"></script>
     <script src="/static/js/underscore.js"></script>
     <script src="/static/js/backbone.js"></script>
     {% block headers %}{% endblock %}
 </head>
 <body>
     <div id="frame">
-        <div id="header">Live Reno</div>
-    </div>
-    <div id="frame">
+        <div id="header">
+            <span id="imgBlock"><a href="{% url 'landing' %}"><img src="/static/img/renoliveSmall.png"></a></span>
+        </div>
         <div id="main">
             {% block content %}
             <p>Your place for city-aware services</p>
             {% endblock %}
         </div>
     </div>
-    <div id="footer">
-        <div id="cn">© 2011 Rock Star Scientists. Reno, NV.</div>
-    </div>
+<!--    <div id="cn">© 2011 Rock Star Scientists. Reno, NV.</div>-->
 </body>
 </html>

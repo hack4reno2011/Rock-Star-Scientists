@@ -1,94 +1,25 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-	<link rel="stylesheet" href="/static/css/stylereset.css">
-	<link rel="stylesheet" href="/static/css/style.css">
-    <script src="/static/js/jquery.js"></script>
-    <script src="/static/js/underscore.js"></script>
-    <script src="/static/js/backbone.js"></script>
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <style type="text/css">
-body {
-    padding: 0px;
-    margin: 0px;
-}
-#mapCanvas {
-    padding: 0;
-    width:100%;
-}
-.editHolder {
-    width:400px;
-}
-.label {
-    width:400px;
-    clear:both;
-}
-.options {
-    float:right;
-}
-#mapCanvas {
-    width: 100%;
-    height: 100%;
-}
-    </style>
+{% extends "foundation.html" %}
+{% block headers %}
     <script>
-var buttonMenu = "<button id='refresh'>Refresh</button><button id='sortByName'>Sort by Name</button><button id='sortById'>Sort by ID</button><input type='text'></input><button id='new'>New Item</button><ul></ul>";
-var noIdItem = '<div class="label"><%= name %><div class="options"><button class="delete">x</button></div></div>';
-var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= name %>"></input><div class="options"><button class="delete">x</button></div></div>';
+var inputMenu = "<div id='barCell'><span class='inputBar'><label>Name:<input type='text'></input></label><button id='add'>Add</button></span></div>";
+var sortMenu = "<button id='sortByName'>Sort by Name</button><button id='sortById'>Sort by ID</button>";
+var noIdItem = '<div class="label"><%= name %><div class="options"><button class="delete">delete</button></div></div>';
+var noIdRow = '<td class="rowName"><%= name %></td><td><button class="delete">delete</button></td>';
+var editRow = '<td><input class="labelInput" value="<%= name %>"></input></td><td><button class="delete">delete</button></td>';
 
 var data = []
 
-var blueIcon = new google.maps.MarkerImage(google.maps.G_DEFAULT_ICON);
-blueIcon.url = "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png";
-
-function addMarker(map, item) {
-    //use the object's properties
-    var position = new google.maps.LatLng(item.get('latitude'), item.get('longitude'));
-    console.log("drawing marker");
-    return marker = new google.maps.Marker({
-        title: item.get('name'),
-        position: position,
-        map: map,
-        draggable: true,
-        raiseOnDrag: true
-    });
-}
-
-//google.maps.event.addListener(marker, 'click', function() {
-//    map.setZoom(8);
-//  });
-
 $(function() {
-    var defaultLat = 39.52546, defaultLong = -119.81423;
-    //initial focus
-    var myOptions = {
-        zoom: 13,
-        center: new google.maps.LatLng(defaultLat, defaultLong),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    var map = new google.maps.Map(document.getElementById("mapCanvas"), myOptions);
 
-    var BusStop = Backbone.Model.extend({
-        defaults: {'name': "New Bus Stop", 'latitude': defaultLat, 'longitude': defaultLong},
-        urlRoot: '/api/busstops/',
-    });
-    
-    //var BusStopView = Backbone.View.extend({
-    //})
-    
     var Item = Backbone.Model.extend({
-        defaults: {'name': "New Bus Stop", 'latitude': defaultLat, 'longitude': defaultLong},
-        urlRoot: '/api/busstops/',
+        defaults: {'name': "Unknown"},
+        urlRoot: '/api/eventcategories/',
 
     });
 
     var List = Backbone.Collection.extend({
         model: Item,
-        url: '/api/busstops/',
+        url: '/api/eventcategories/',
         parse: function(data) {
             return data.objects;
         },
@@ -98,52 +29,41 @@ $(function() {
     });
 
     var ItemView = Backbone.View.extend({
-        tagName: 'li',
-        className: 'green',
+        tagName: 'tr',
+        className: 'label',
         events: {
             'click button.delete': 'remove',
-            'click div.label': "moveMap",
-            'dblclick div.label': "editLabel",
+            'dblclick td.rowName': "editLabel",
         },
         initialize: function() {
-            _.bindAll(this, 'render', 'unrender', 'remove', 'editLabel', 'saveLabel', "moveMap");
+            _.bindAll(this, 'render', 'unrender', 'remove', 'editLabel', 'saveLabel');
             this.model.bind('change', this.render);
             this.model.bind('remove', this.unrender);
         },
         render: function() {
-            $(this.el).html(_.template(noIdItem, this.model.toJSON()));
-            //TODO create the google maps object
-            
-            if (!this.model.get('is_drawn')) {
-                //TODO tie the models together
-                this.model.set({'is_drawn': true, 'marker': addMarker(map, this.model)});
-            }
-            
-            
+            $(this.el).html(_.template(noIdRow, this.model.toJSON()));
             return this;
         },
         editLabel: function() {
             //change the template to editing mode
-            $(this.el).html(_.template(editTemp, this.model.toJSON()))
-            $('input.labelInput', this.el).change(this.saveLabel);
-            return this;
+            $(this.el).html(_.template(editRow, this.model.toJSON()))
+            //TODO should only save on change
+            $('input.labelInput', this.el).focusout(this.saveLabel).change(this.saveLabel).bind("keypress", function(e) {if (e.keyCode == 13) {this.saveLabel};});
         },
         saveLabel: function() {
             //TODO confirm new text, delete if empty
             var newText = $('input.labelInput', this.el).val();
             this.model.set({'name': newText});
             this.model.save();
+            //TODO rerender no matter what happened: avoid duplication with save call
+            $(this.el).html(_.template(noIdRow, this.model.toJSON()));
         },
         unrender: function() {
             $(this.el).remove();
-            console.log("unrender");
-            if (this.model.get('is_drawn')) {
-                console.log("removing market");
-                this.model.get('marker').setMap(null);
-            }
         },
         remove: function() {
             //this.model.destroy();
+            //TODO no need for custom callbacks?
             console.log("preparing to destroy:", this.model);
             this.model.destroy({error: function(model, response) {
                     console.log("DELETE error:", response);
@@ -153,29 +73,18 @@ $(function() {
                     console.log("DELETE success:", model, response);
                 }
             });
-        },
-        moveMap: function() {
-            //change the color of the icon
-            
-            if (this.model.get('is_drawn')) {
-                console.log("moving map");
-                var marker = this.model.get('marker');
-                marker.setMap(null);
-                marker.icon = blueIcon;
-                marker.setMap(map);
-                map.setCenter(marker.getPosition())
-            }
         }
     });
     
+    //TODO why global?
     var iList = (new List()).add(data);
     
     var AppView = Backbone.View.extend({
 
-        el: $('#container'),
+        el: $('#tableCell'),
         events: {
             'click button#refresh': "refreshList",
-            'click button#new': "newItem",
+            'click button#add': "newItem",
             'click button#sortByName': "sortByName",
             'click button#sortById': "sortById",
         },
@@ -192,11 +101,11 @@ $(function() {
             
         },
         render: function() {
-            $(this.el).append(_.template(buttonMenu, {}));
+            $(this.el).append(_.template(inputMenu, {})).append(_.template(sortMenu, {})).append("<table><thead><tr class='header'><th>Category</th><th>Options</th></tr></thead><tbody></tbody></table>");
             this.renderList();
         },
         renderList: function() {
-            $('ul', this.el).empty();
+            $('tbody', this.el).empty();
             // _.each?
             for (var i = 0; i < this.collection.models.length; i++) {
                 this.appendItem(this.collection.models[i]);
@@ -209,7 +118,7 @@ $(function() {
             var itemView = new ItemView({
                 model: item
             });
-            $('ul', this.el).append(itemView.render().el);
+            $('tbody', this.el).append(itemView.render().el);
         },
         sortByName: function() {
             this.sortOrder = -this.sortOrder;
@@ -256,11 +165,9 @@ $(function() {
     var app = new AppView();
 });
     </script>
-</head>
+{% endblock %}
 
-<body>
-    <div id="mapCanvas"></div>
-    <div id="container">
-    </div>
-</body>
-</html>
+{% block content %}
+<h3>Add an event category:</h3>
+<div id="tableCell"></div>
+{% endblock %}

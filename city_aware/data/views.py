@@ -5,7 +5,7 @@ from data.models import RawAddresses
 
 def landing(request):
     a = {}
-    return render(request, 'base.html', a)
+    return render(request, 'home.html', a)
     
 
 def view_raw_addresses(request):

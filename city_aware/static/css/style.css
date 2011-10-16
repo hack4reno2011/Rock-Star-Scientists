@@ -1,23 +1,141 @@
-
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin: 0;padding: 0;font-size: 100%;vertical-align: baseline;border: 0;outline: 0;background: transparent;}
+a {text-decoration: none;}
+ol, ul {list-style: none;}
+blockquote, q {quotes: none;}
+table {border-collapse: collapse;border-spacing: 0;}
+html, body {    
+    height: 100%;
+}
 body {
-    background-image:url('paper_2.png');
-    background-repeat: repeat; 
-    text-align:center; 
-    padding-top:10%; 
-    color:black
-    }
+    font: small sans-serif; 
+    background-color: #f9f9f9; 
+    color:#222;
+}
 #header {
-    font-size:35pt; 
-    font-family: helvetica, sans-serif; 
-    font-style:oblique; 
-    font-weight:700; 
-    color:black
-  }
-  
-ul {
-    text-align:center;
+    background: #000;
+    border-bottom:1px #222 solid;
+    color:#f6f6f6;
+    font-size:200%; 
+    font-weight:bold; 
+    height:80px;
+}
+#header span#imgBlock {
     position:relative;
-    }
-  
+    left:6px;
+    top:3px;
+}
+div#frame {
+}
+#title {
+    position:absolute;
+    top:5px;
+    left:15px;
+    margin:5px 0 0 15px;
+}
+div#footer {
+    height:30px;
+    position: absolute;
+    margin:0;
+    bottom:0;
+    width:100%;
+    background-color:#000;
+}
+#cn {
+    width:100%;
+    position:absolute;
+    bottom:8px;
+    text-align:center;
+    color:#f6f6f6;
+    z-index:0;
+    font-size:90%;
+}
+#main {
+    padding:5px 0 35px 10px;
+}
+h3 {
+    color: #222;
+    font-size:190%;
+    margin-bottom:5px;
+}
+h4 {
+    color: #222;
+    font-size:120%;
+}
+ul {
+    list-style:circle;
+    margin-left:20px;
+}
+table.options {
+    float:right;
+}
+table {
+    border: 1px #444 solid;
+}
+table tr {
+    border-bottom: 1px #444 solid;
+}
+table tr:hover {
+    background-color:#ededfa;
+}
+table tr.header {
+    border: 1px #444 solid;
+    color:#f6f6f6;
+    text-align: center;
+    background-color:#000;
+}
+table tr.header th {
+    vertical-align:middle;
+}
+table tbody td {
+    padding: 5px 6px;
+    vertical-align:middle;
+}
+table thead th {
+    padding: 5px 6px;
+}
+button {
+    border:none;
+    font-size:85%;
+    font-weight:normal;
+    color:#222;
+    background-color:#ccc;
+    padding: 3px 8px;
+    border: 1px solid #aaa;
+    border-radius:2px;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    text-shadow: 1px 1px 0 #ddd;
+    cursor: pointer;
+}
+button:hover, button:focus {
+    background: #55a;
+    text-shadow: 1px 1px 0 #333;
+    color: #fff;
+}
+button[disabled] {
+    background-color:#eee;
+    color:#999;
+    cursor: auto;
+}
+button[disabled]:hover, button[disabled]:focus {
+    background: #eee;
+    text-shadow: 1px 1px 0 #ddd;
+    color: #999;
+    border: 1px solid #aaa;
+}
+input {
+    border:none;
+    background:#f6f6f6;
+    padding:3px 5px;
+}
+input:focus, input:hover {
 
-    
+}
+span.inputBar {
+    background-color:#000;
+    color:#f6f6f6;
+    padding:10px;
+}
+div#barCell {
+    margin:5px 0 20px 0;
+}

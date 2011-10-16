@@ -264,6 +264,7 @@ $(function() {
             var newVenue = $('#venuePK', this.el).val();
             if (!newVenue) {
                 newVenue = null;
+                
             } else {
                 //TODO in case of error set null? or reject addition
                 newVenue = parseInt(newVenue, 10);
@@ -271,9 +272,17 @@ $(function() {
             console.log("preparing to save sponsor:", newText, newVenue);
             if (newText) {
                 //var newSponsor = new Item({'name': newText, 'venue': {'pk': newVenue}});
-                var newSponsor = new Item({'name': newText, 'venue': "/api/venues/" + newVenue + "/"});
-                console.log('saving:', newSponsor);
-                newSponsor.save({}, {success: buildSuccessReponse(this.collection)});
+                if (newVenue == null) {
+                    var newSponsor = new Item({'name': newText, 'venue': null});
+                    console.log('saving:', newSponsor);
+                    newSponsor.save({}, {success: buildSuccessReponse(this.collection)});
+                } else {
+                    var newSponsor = new Item({'name': newText, 'venue': "/api/venues/" + newVenue + "/"});
+                    console.log('saving:', newSponsor);
+                    newSponsor.save({}, {success: buildSuccessReponse(this.collection)});
+                }
+                
+                
                 var newText = $('#newName', this.el).val("");
                 this.removeVenue();
             }

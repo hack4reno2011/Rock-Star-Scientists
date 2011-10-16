@@ -1,0 +1,14 @@
+{% extends "foundation.html" %}
+{% load url from future %}
+
+{% block content %}
+{% if venues %}
+<ul>
+{% for venue in venues %}
+<li><a href="{% url 'venue_page' venue_id=venue.id %}">{{venue.name}}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<p>There are no venues listed!</p>
+{% endif %}
+{% endblock %}

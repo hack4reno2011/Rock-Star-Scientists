@@ -1,0 +1,20 @@
+{% extends "foundation.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<h3>{{venue.name}}</h3>
+
+{% if events %}
+<h4>Upcoming events:</h4>
+<ul>
+{% for event in events %}
+    <li>{{event.name}}, Starts: {{event.start_time}}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>This venue has no upcoming events.</p>
+
+{% endif %}
+
+{% endblock %}

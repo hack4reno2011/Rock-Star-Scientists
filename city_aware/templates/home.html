@@ -1,41 +1,25 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-	<link rel="stylesheet" href="/static/css/stylereset.css">
-	<link rel="stylesheet" href="/static/css/style.css">
-    <script src="/static/js/jquery.js"></script>
-    <script src="/static/js/underscore.js"></script>
-    <script src="/static/js/backbone.js"></script>
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <style type="text/css">
-body {
-    padding: 0px;
-    margin: 0px;
-}
-#mapCanvas {
-    padding: 0;
-    width:100%;
-}
-.editHolder {
-    width:400px;
-}
-.label {
-    width:400px;
-    clear:both;
-}
-.options {
-    float:right;
+{% extends "foundation.html" %}
+{% load url from future %}
+
+{% block headers %}
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<style type="text/css">
+#calendar {
+    width:500px;
+    height:100px;
+    margin:auto;
+    border:1px black solid;
 }
 #mapCanvas {
     width: 100%;
-    height: 100%;
+    height: 500px;
 }
-    </style>
-    <script>
+#main {
+    padding:0;
+    margin:0;
+}
+</style>
+<script>
 var buttonMenu = "<button id='refresh'>Refresh</button><button id='sortByName'>Sort by Name</button><button id='sortById'>Sort by ID</button><input type='text'></input><button id='new'>New Item</button><ul></ul>";
 var noIdItem = '<div class="label"><%= name %><div class="options"><button class="delete">x</button></div></div>';
 var editTemp = '<div class="editHolder"><input class="labelInput" value="<%= name %>"></input><div class="options"><button class="delete">x</button></div></div>';
@@ -47,7 +31,8 @@ blueIcon.url = "http://www.google.com/intl/en_us/mapfiles/ms/micons/blue-dot.png
 
 function addMarker(map, item) {
     //use the object's properties
-    var position = new google.maps.LatLng(item.get('latitude'), item.get('longitude'));
+    var venue = item.get('venue');
+    var position = new google.maps.LatLng(venue['latitude'], venue['longitude']);
     console.log("drawing marker");
     return marker = new google.maps.Marker({
         title: item.get('name'),
@@ -74,7 +59,7 @@ $(function() {
 
     var BusStop = Backbone.Model.extend({
         defaults: {'name': "New Bus Stop", 'latitude': defaultLat, 'longitude': defaultLong},
-        urlRoot: '/api/busstops/',
+        urlRoot: '/api/events/',
     });
     
     //var BusStopView = Backbone.View.extend({
@@ -82,13 +67,13 @@ $(function() {
     
     var Item = Backbone.Model.extend({
         defaults: {'name': "New Bus Stop", 'latitude': defaultLat, 'longitude': defaultLong},
-        urlRoot: '/api/busstops/',
+        urlRoot: '/api/events/',
 
     });
 
     var List = Backbone.Collection.extend({
         model: Item,
-        url: '/api/busstops/',
+        url: '/api/events/',
         parse: function(data) {
             return data.objects;
         },
@@ -256,11 +241,12 @@ $(function() {
     var app = new AppView();
 });
     </script>
-</head>
+{% endblock %}
 
-<body>
-    <div id="mapCanvas"></div>
-    <div id="container">
-    </div>
-</body>
-</html>
+{% block content %}
+
+<h3>{{venue.name}}</h3>
+<div id="mapCanvas"></div>
+<!--<div id="calendar">wat</div>-->
+
+{% endblock %}

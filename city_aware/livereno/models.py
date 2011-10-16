@@ -24,13 +24,13 @@ class EventCategories(models.Model):
         db_table = u"event_categories"
 
 class Events(models.Model):
-    name = models.CharField(unique=True, max_length = 255)
+    name = models.CharField(max_length = 255)
     sponsor = models.ForeignKey(Sponsors)
     venue = models.ForeignKey(Venues)
     category = models.ForeignKey(EventCategories)
-    start_time = models.DateTimeField()
+    start_time = models.DateTimeField(db_index=True)
     #TODO validate end time should be after start time
-    end_time = models.DateTimeField()
+    end_time = models.DateTimeField(db_index=True)
     modified = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = u"events"

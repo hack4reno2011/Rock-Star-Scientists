@@ -33,6 +33,7 @@ class SponsorsResource(ModelResource):
 
 
 class EventsResource(ModelResource):
+    venue = fields.ForeignKey(VenuesResource, 'venue', full=True)
     class Meta:
         filtering = {
             'name': ALL,
