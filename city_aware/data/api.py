@@ -28,6 +28,7 @@ class BusStopsResource(ModelResource):
             'longitude': ALL,
             'name': ALL,
         }
+        limit = 100
         queryset = BusStops.objects.all()
         authentication = Authentication()
         authorization = Authorization()

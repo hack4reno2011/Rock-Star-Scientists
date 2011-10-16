@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^', include(city_api.urls)),
     url(r'^bone$', 'data.views.view_bone', name='backbone'),
     url(r'^busstops$', 'data.views.busstops_main', name='busstops'),
+    url(r'^busmap$', 'data.views.busstops_map', name='busmap'),
 
     # Examples:
     # url(r'^$', 'city_aware.views.home', name='home'),
