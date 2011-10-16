@@ -25,3 +25,8 @@ def busstops_main(request):
     #TODO direct to template
     a={}
     return render(request, 'busstops_main.html', {})
+
+def busstops_map(request):
+    #TODO direct to template
+    a={}
+    return render(request, 'busstops_map.html', {})
